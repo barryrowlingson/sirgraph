@@ -12,6 +12,8 @@
 ##' @param stepsize size of time step
 ##' @return a modified version of g with extra vertex attributes
 ##' @author Barry S Rowlingson
+##' @export
+
 makedata <- function(g = graph.famous("Zachary"),
                      s=310366,
                      pvac=0.6,

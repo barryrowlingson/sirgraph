@@ -5,6 +5,7 @@
 ##' @param g a graph network for SIR modelling
 ##' @return modified g
 ##' @author Barry S Rowlingson
+##' @export
 resetG <- function(g){
     nv = vcount(g)
     V(g)$state = rep("S", nv)
@@ -20,6 +21,7 @@ resetG <- function(g){
 ##' @param N number of cases to create
 ##' @return a function that resets its graph and adds N initial infections.
 ##' @author Barry S Rowlingson
+##' @export
 infectN <- function(N){
     force(N)
     f = function(g){
@@ -41,6 +43,7 @@ infectN <- function(N){
 ##' @return a spreader function that uses the probabilities on each edge to proceed with the
 ##' infection process.
 ##' @author Barry S Rowlingson
+##' @export
 spreadP2 <- function(pSI=0.8, pIR=0.2){
     f <- function(g){
         ## recover infected:
@@ -84,6 +87,7 @@ spreadP2 <- function(pSI=0.8, pIR=0.2){
 ##' @param plotter a plotter function
 ##' @return the end state of the graph
 ##' @author Barry S Rowlingson
+##' @export
 stepSim <- function(g, starter=infectN(1), spreader, stopper, plotter=NULL){
     g = glayout(g)
     g = starter(g)
@@ -111,6 +115,7 @@ stepSim <- function(g, starter=infectN(1), spreader, stopper, plotter=NULL){
 ##' @param t a time point
 ##' @return the SIR graph at that time
 ##' @author Barry S Rowlingson
+##' @export
 gAtTime <- function(g,t){
     g$time=t
     tI = V(g)$tI
@@ -129,6 +134,7 @@ gAtTime <- function(g,t){
 ##' @param d anything that can be compared to the time attribute of the graph
 ##' @return a stopper function that returns whether or not the time is past.
 ##' @author Barry S Rowlingson
+##' @export
 stopAfter <- function(d){
     f = function(g){
         if(g$time >= d){
@@ -147,6 +153,7 @@ stopAfter <- function(d){
 ##' @param g an SIR graph
 ##' @return TRUE if ther are no infectious cases, otherwise FALSE
 ##' @author Barry S Rowlingson
+##' @export
 stopWhenClear <- function(g){
     if(any(V(g)$state=="I")){
         return(FALSE)

@@ -7,6 +7,7 @@
 ##' @param ... further parameters for the layout function
 ##' @return a modified SIR graph
 ##' @author Barry S Rowlingson
+##' @export
 glayout <- function(g,
                     layout=layout.kamada.kawai,
                     ...
@@ -28,6 +29,7 @@ glayout <- function(g,
 ##' @param ... further arguments
 ##' @return a geom for ggplot
 ##' @author Barry S Rowlingson
+##' @export
 geom_node <- function(mapping=NULL, data=NULL, stat="identity", position="identity",
                       na.rm=FALSE,...){
     gdata = get.data.frame(data, what="vertices")
@@ -46,6 +48,7 @@ geom_node <- function(mapping=NULL, data=NULL, stat="identity", position="identi
 ##' @param ... further parameters for geom_segment
 ##' @return a geom_segment for ggplot
 ##' @author Barry S Rowlingson
+##' @export
 geom_edge <- function(mapping=NULL, data=NULL, graph=NULL, directed=FALSE,...){
     xy <- cbind(
         get.vertex.attribute(data, mapping$x),
@@ -64,6 +67,7 @@ geom_edge <- function(mapping=NULL, data=NULL, graph=NULL, directed=FALSE,...){
 ##' @param g an SIR graph
 ##' @return make a plot
 ##' @author Barry S Rowlingson
+##' @export
 gplotgraph <- function(g){
     ggplot() + geom_edge(aes(x=x,y=y),col="grey", data=g) +
         geom_node(aes(x=x,y=y,col=state,shape=vaccinated),size=5,data=g) +
@@ -81,6 +85,7 @@ gplotgraph <- function(g){
 ##' @param ... further layout parameters
 ##' @return nothing
 ##' @author Barry S Rowlingson
+##' @export
 plotSIR <- function(g, layout=layout.kamada.kawai, seed=1, ...){
     ss = .Random.seed
     set.seed(seed)

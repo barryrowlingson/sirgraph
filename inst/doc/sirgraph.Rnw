@@ -17,7 +17,6 @@ extra attributes on the graph and the nodes. A sample can be created with the {\
 function.
 
 <<data>>=
-require(sirgraph)
 g = makedata()
 g
 @ 

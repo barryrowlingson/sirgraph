@@ -12,12 +12,18 @@
 
 \section{Graph data}
 
+First install and then attach the package.
+
+<<startup>>=
+library(sirgraph)
+@ 
+
 A graph object suitable for {\tt sirgraph} is an {\tt igraph} object with some
 extra attributes on the graph and the nodes. A sample can be created with the {\tt makedata}
 function.
 
+
 <<data>>=
-require(sirgraph)
 g = makedata()
 g
 @ 
