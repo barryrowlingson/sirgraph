@@ -189,7 +189,7 @@ g$time
 gplotgraph(g)
 @ 
 
-The infection is clearly still going at that point. Now we'll start again and it run until 
+The infection is clearly still going at that point. Now we'll start again and let it run until 
 it has finished and there are no infectious nodes.
 
 <<stepclear>>=
@@ -216,7 +216,7 @@ ggplot(d,aes(x=tI,fill=vaccinated))+geom_histogram()
 
 This code has been written with a fairly strong functional program methodology, hence the 
 sprinkling of function generators here and there. The design of the {\tt stepSim} function
-has been influenced by the idea of {tt dependency injection}, so that the function code
+has been influenced by the idea of {\tt dependency injection}, so that the function code
 represents the minimal amount of code needed for any generic simulation, and specific behaviour
 is passed in via spreader and stopper functions.
 
