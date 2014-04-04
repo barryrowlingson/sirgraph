@@ -3,6 +3,8 @@ Title: SIR models on graphs
 Description: Infections disease modelling on graph networks
 Version: 0.1
 Authors@R: "Barry Rowlingson <b.rowlingson@gmail.com> [aut, cre]"
-Depends: R (>= 3.0.2)
+Depends: R (>= 3.0.2),
+  igraph,
+  ggplot2
 License: Private
 LazyData: true
