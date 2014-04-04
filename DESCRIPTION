@@ -8,6 +8,8 @@ Depends:
     R (>= 3.0.2),
     igraph,
     ggplot2
+Suggests:
+    knitr
 License: MIT
 LazyData: true
 Collate:
@@ -15,3 +17,4 @@ Collate:
     'graphics.R'
     'sirgraph-package.r'
     'sirgraph.R'
+VignetteBuilder: knitr

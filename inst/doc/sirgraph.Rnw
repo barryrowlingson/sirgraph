@@ -1,0 +1,237 @@
+\documentclass{article}
+
+%\VignetteIndexEntry{Using sirgraph}
+%\VignetteEngine{knitr::knitr}
+
+\title{Using {\tt sirgraph}}
+\author{Barry Rowlingson}
+
+\begin{document}
+
+\maketitle
+
+\section{Graph data}
+
+A graph object suitable for {\tt sirgraph} is an {\tt igraph} object with some
+extra attributes on the graph and the nodes. A sample can be created with the {\tt makedata}
+function.
+
+<<data>>=
+require(sirgraph)
+g = makedata()
+g
+@ 
+
+The easiest way to get the node attributes is via the {\tt get.data.frame} function.
+
+<<attrs>>=
+head(get.data.frame(g,"vert"))
+@ 
+
+As well as extra node attributes, the graph itself has some extra attributes.
+
+<<graphatts>>=
+g$time
+g$start
+g$stepsize
+@ 
+
+\section{Plotting}
+
+First we'll set some infected and recovered nodes on the graph.
+
+<<setup>>=
+V(g)$state[1:3]="I"
+V(g)$state[4:6]="R"
+@ 
+
+a simple plotting function can then be used:
+
+<<splot>>=
+plotSIR(g)
+@ 
+
+To use the {\tt ggplot2} graphics functions we first have to assign coordinates to the
+graph using the {\tt glayout} function:
+
+<<glayout>>=
+g = glayout(g)
+@ 
+
+By default this uses the Kamada-kawai layout, but any of the layout functions from 
+{\tt igraph} can be used.
+
+Now we can plot it:
+
+<<gggplot>>=
+gplotgraph(g)
+@ 
+
+This function uses the lower-level {\tt geom} functions to plot state and vaccination 
+status. You can use these lower-level functions to build other plots, for example to
+plot the network coloured by age and shaped by sex:
+
+<<plotvars>>=
+ggplot() + geom_edge(aes(x=x,y=y),col="grey", data=g) + geom_node(aes(x=x,y=y,col=age,shape=sex),size=5,data=g)
+@ 
+
+Full control of the plot is then available using the {\tt ggplot2} functions, for example to change the colour scheme
+or shapes.
+
+\section{Discrete Time Infection Modelling}
+
+Running an SIR model on a graph network requires the following:
+
+\begin{itemize}
+  \item A graph
+  \item An initial state of each node (S, I, or R).
+  \item A method for the spread of infection (S to I).
+  \item A method for the removal of infection (I to R).
+  \item A way of deciding when to stop the simulation
+\end{itemize}
+
+\subsection{Starter Functions}
+
+A ``starter'' function is one which sets the initial infection state of a graph. Possible starter
+functions could be to set a fixed number of nodes as infectious, or to set infectious status with 
+a fixed probability, or to set infectious status according to attributes of the nodes. A starter function
+always takes a graph as parameter, and returns the graph with a modified {\tt state} attribute.
+
+The {\tt infectN} function is a starter function {\em generator}, in that it returns starter functions
+from a family of functions based on N, the number of initial infectious nodes. So {\tt infectN(1)} is
+a starter function that infects one node, {\tt infectN(5)} is a starter function that infects five nodes.
+
+<<infectN, fig.width=8, fig.height=4, out.width="1.0\\textwidth">>=
+g = makedata()
+g = glayout(g)
+g = infectN(1)(g)
+par(mfrow=c(1,2)); par(mar=c(0,0,0,0))
+plotSIR(g)
+g = infectN(5)(g)
+plotSIR(g)
+@ 
+
+Exercise: write a starter function generator, {\tt infectP}, perhaps, that starts the infection with each node
+having a probability, {\tt p} of being infected.
+
+\subsection{Spreader Functions}
+
+A ``spreader'' function is responsible for stepping the infection along by a single time step. Currently it
+has the job of infecting new nodes and removing infected nodes (but this may be worth changing at some point).
+
+As with a starter function, it takes an SIR graph as input and returns the updated graph. Function generators
+are again useful for creating spreader functions from parameterised families. We illustrate that now.
+
+The {\tt spreadP2} spreader function generator produces spreader functions based on two probabilities. The
+probability of a susceptible node being infected by an infectious node is {\tt pSI} in any time step, and the probability
+of an infected node recovering is {\tt pIR} in any time step.  Hence a spreader function that gives each
+infectious possibility and recovery possibility an even chance is created thus:
+
+<<spread1>>=
+sEvens = spreadP2(pSI=0.5, pIR=0.5)
+@ 
+
+We can now run this spreader a few times and see the change.
+
+<<spreadit, fig.width=8, fig.height=8, out.width="0.8\\textwidth">>=
+par(mfrow=c(2,2)); par(mar=c(0,0,0,0))
+plotSIR(g)
+g = sEvens(g)
+plotSIR(g)
+g = sEvens(g)
+plotSIR(g)
+g = sEvens(g)
+plotSIR(g)
+@ 
+
+Now we repeat, but with a lower recovery probability and a higher infectious probability:
+
+<<spreadmore,fig.width=8, fig.height=8, out.width="0.8\\textwidth" >>=
+sMore = spreadP2(pSI=0.8, pIR=0.1)
+g = infectN(5)(g)
+par(mfrow=c(2,2)); par(mar=c(0,0,0,0))
+plotSIR(g)
+g = sMore(g)
+plotSIR(g)
+g = sMore(g)
+plotSIR(g)
+g = sMore(g)
+plotSIR(g)
+@ 
+
+One thing we haven't done here is to update the time attribute of the graph. This can be done
+within a loop that repeatedly calls the spreader function, but first we need to look at stopper functions.
+
+\subsection{Stopper Functions}
+
+A ``stopper'' function takes an SIR graph and returns TRUE if it decides you should stop running a simulation.
+Possible stopper functions include stopping after a given time, or stopping if there are no infectious cases.
+Those two stopper functions are currently implemented.
+
+Stopper functions aren't much use on their own, but are designed to be passed into the main looping function
+{\tt stepSim}.
+
+\section{Running Simulations}
+
+The main simulation looping function, {\tt stepSim} takes a graph, a
+starter function, a spreader function, and a stopper function, and
+runs the spreader until the stopper indicates it has finished. The graph
+is returned with final state and infections and removal times as node
+attributes.
+
+The default start time in {\tt makedata} is 2014-01-01, so here we'll run
+for 12 days:
+
+<<runsim>>=
+g = makedata()
+g = stepSim(g, infectN(1), sMore, stopAfter("2014-01-12"))
+g$time
+gplotgraph(g)
+@ 
+
+The infection is clearly still going at that point. Now we'll start again and it run until 
+it has finished and there are no infectious nodes.
+
+<<stepclear>>=
+g = makedata()
+g = stepSim(g, infectN(1), sMore, stopWhenClear)
+g$time
+gplotgraph(g)
+@
+
+The timing of the state changes can be obtained by getting the vertex data frame. Note that dates
+aren't kept as dates and so need converting from the number of days from the start of 1970. Then we
+can, for example, plot a histogram of the infection times, broken down by vaccination status (which in
+this case is irrelevant):
+
+<<vdf>>=
+d = get.data.frame(g,"vertices")
+d$tI = as.Date(d$tI, "1970-01-01")
+d$tR = as.Date(d$tR, "1970-01-01")
+head(d)
+ggplot(d,aes(x=tI,fill=vaccinated))+geom_histogram()
+@ 
+
+\section{Design}
+
+This code has been written with a fairly strong functional program methodology, hence the 
+sprinkling of function generators here and there. The design of the {\tt stepSim} function
+has been influenced by the idea of {tt dependency injection}, so that the function code
+represents the minimal amount of code needed for any generic simulation, and specific behaviour
+is passed in via spreader and stopper functions.
+
+This design also means that spreader and stopper functions can be easily run and hence tested
+outside any looping code.
+
+\section{To-do}
+
+Some ideas:
+
+\begin{itemize}
+  \item make the SIR graph objects a new class
+  \item separate the infectious and removal aspects of the spreader function
+  \item write some functions to plot the number of S, I, R cases over time
+\end{itemize}
+
+\end{document}
+
