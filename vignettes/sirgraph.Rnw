@@ -189,7 +189,7 @@ g$time
 gplotgraph(g)
 @ 
 
-The infection is clearly still going at that point. Now we'll start again and it run until 
+The infection is clearly still going at that point. Now we'll start again and let it run until 
 it has finished and there are no infectious nodes.
 
 <<stepclear>>=
