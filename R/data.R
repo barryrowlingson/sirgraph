@@ -1,3 +1,17 @@
+##' make a simple graph for SIR modelling
+##'
+##' make a graph for SIR modelling - it initialises the
+##' network and the state parameter, and adds a few more
+##' random things such as age, sex, vaccination state. Handy
+##' for simple tests
+##' @title makedata
+##' @param g a simple graph
+##' @param s a random seed
+##' @param pvac vaccination probability
+##' @param start time start
+##' @param stepsize size of time step
+##' @return a modified version of g with extra vertex attributes
+##' @author Barry S Rowlingson
 makedata <- function(g = graph.famous("Zachary"),
                      s=310366,
                      pvac=0.6,
