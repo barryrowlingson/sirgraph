@@ -1,4 +1,10 @@
-
+##' reset graph
+##'
+##' reset all nodes to "S", reset clock to start, clear infection/recovery times
+##' @title resetG
+##' @param g a graph network for SIR modelling
+##' @return modified g
+##' @author Barry S Rowlingson
 resetG <- function(g){
     nv = vcount(g)
     V(g)$state = rep("S", nv)
@@ -7,7 +13,13 @@ resetG <- function(g){
     g$time = g$start
     g
 }
-
+##' simple infection starter function
+##'
+##' creates a function that creates a fixed number of cases
+##' @title infectN
+##' @param N number of cases to create
+##' @return a function that resets its graph and adds N initial infections.
+##' @author Barry S Rowlingson
 infectN <- function(N){
     force(N)
     f = function(g){
@@ -20,7 +32,15 @@ infectN <- function(N){
     f
 }
 
-
+##' simple two-probability model
+##'
+##' creates a spreader function with an infection probability and a recovery probability
+##' @title spreadP2
+##' @param pSI infection probability
+##' @param pIR recovery probability
+##' @return a spreader function that uses the probabilities on each edge to proceed with the
+##' infection process.
+##' @author Barry S Rowlingson
 spreadP2 <- function(pSI=0.8, pIR=0.2){
     f <- function(g){
         ## recover infected:
@@ -51,7 +71,19 @@ spreadP2 <- function(pSI=0.8, pIR=0.2){
             
 
 
-
+##' Discrete time-stepping SIR graph model
+##'
+##' Starting with a graph, infect the initial cases, then run the
+##' spreader until the stopper is true. Optionally run the plotter
+##' every iteration
+##' @title stepSim
+##' @param g an SIR graph
+##' @param starter a starter function
+##' @param spreader a spreader function
+##' @param stopper a stopper function
+##' @param plotter a plotter function
+##' @return the end state of the graph
+##' @author Barry S Rowlingson
 stepSim <- function(g, starter=infectN(1), spreader, stopper, plotter=NULL){
     g = glayout(g)
     g = starter(g)
@@ -68,7 +100,17 @@ stepSim <- function(g, starter=infectN(1), spreader, stopper, plotter=NULL){
     g
 }
 
-
+##' recalculate state of network at given time
+##'
+##' when a simulation has run, the graph stores the infection and recovery times, and
+##' the final states. This function sets the states to the values correct at the given
+##' time by comparison with the infection and recovery times. It also sets the time of the
+##' graph but does not change the infection and recovery times.
+##' @title gAtTime
+##' @param g an SIR graph
+##' @param t a time point
+##' @return the SIR graph at that time
+##' @author Barry S Rowlingson
 gAtTime <- function(g,t){
     g$time=t
     tI = V(g)$tI
@@ -79,6 +121,14 @@ gAtTime <- function(g,t){
     g
 }
 
+##' Stop after a certain time
+##'
+##' This is a stopper function generator returns a function that stops a process after a
+##' given time. 
+##' @title stopAfter
+##' @param d anything that can be compared to the time attribute of the graph
+##' @return a stopper function that returns whether or not the time is past.
+##' @author Barry S Rowlingson
 stopAfter <- function(d){
     f = function(g){
         if(g$time >= d){
@@ -90,6 +140,13 @@ stopAfter <- function(d){
     f
 }
 
+##' Stop when no more infectious cases
+##'
+##' This is a stopper function that returns true if there are no infectious cases.
+##' @title stopWhenClear
+##' @param g an SIR graph
+##' @return TRUE if ther are no infectious cases, otherwise FALSE
+##' @author Barry S Rowlingson
 stopWhenClear <- function(g){
     if(any(V(g)$state=="I")){
         return(FALSE)
@@ -97,13 +154,3 @@ stopWhenClear <- function(g){
     return(TRUE)
 }
 
-
-glayout <- function(g,
-                    layout=layout.kamada.kawai,
-                    ...
-                    ){
-    xy = layout(g,...)
-    V(g)$x=xy[,1]
-    V(g)$y=xy[,2]
-    g
-}
