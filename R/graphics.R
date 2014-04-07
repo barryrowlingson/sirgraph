@@ -1,3 +1,6 @@
+
+SIRcolours = list("I"="#E41A1C", "R"="#377EB8", "S"="#4DAF4A")
+
 ##' add layout to graph
 ##'
 ##' this function adds x and y coordinate to nodes for plotting
@@ -94,3 +97,17 @@ plotSIR <- function(g, layout=layout.kamada.kawai, seed=1, ...){
     set.seed(ss)
 }
 
+
+timePlot <- function(g,t,n,s){
+    if(missing(t)){
+        if(missing(s)){
+            t = seq(g$start, g$time, len=n)
+        }else{
+            t = seq(g$start, g$time, by=s)
+        }
+    }
+    m = melt(stateAt(g, t), id.vars="t",value.name="count", variable.name="state")
+    ggplot(m,aes(x=t, y=count)) +
+        geom_line(aes(group=state, colour=state)) + 
+        scale_colour_manual(values=unlist(SIRcolours) )
+}
