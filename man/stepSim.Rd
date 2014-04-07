@@ -3,7 +3,7 @@
 \title{stepSim}
 \usage{
   stepSim(g, starter = infectN(1), spreader, stopper,
-    plotter = NULL)
+    after = force)
 }
 \arguments{
   \item{g}{an SIR graph}
@@ -14,7 +14,8 @@
 
   \item{stopper}{a stopper function}
 
-  \item{plotter}{a plotter function}
+  \item{after}{function to call after each spread function
+  call}
 }
 \value{
   the end state of the graph

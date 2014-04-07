@@ -84,19 +84,17 @@ spreadP2 <- function(pSI=0.8, pIR=0.2){
 ##' @param starter a starter function
 ##' @param spreader a spreader function
 ##' @param stopper a stopper function
-##' @param plotter a plotter function
+##' @param after function to call after each spread function call
 ##' @return the end state of the graph
 ##' @author Barry S Rowlingson
 ##' @export
-stepSim <- function(g, starter=infectN(1), spreader, stopper, plotter=NULL){
+stepSim <- function(g, starter=infectN(1), spreader, stopper, after=force){
     g = glayout(g)
     g = starter(g)
     repeat{
         g$time = g$time + g$stepsize
         g = spreader(g)
-        if(!is.null(plotter)){
-            print(plotter(g))
-        }
+        after(g)
         if(stopper(g)){
             break
         }
