@@ -78,6 +78,32 @@ plotSIR(g)
 g$time
 
 
+## ----pSunday-------------------------------------------------------------
+restDay <- function(t, v){
+    nv = length(v)
+    if(wday(t)==1){
+        return(rep(0.5,nv))
+    }else{
+        return(rep(0.9,nv))
+    }
+}
+restDay("2014-04-06",0)
+restDay("2014-04-07",0)
+
+
+## ----pVacc---------------------------------------------------------------
+isVaccinated <- function(t,v){
+    ifelse(v$vaccinated,0.2,0.9)
+}
+# see the first few
+isVaccinated("2014-01-01",V(g))[1:8]
+
+
+## ----fspread-------------------------------------------------------------
+fConst = function(t,v){rep(0.3, length(v))}
+spreadVaccine = spreadF(isVaccinated, fConst)
+
+
 ## ----runsim--------------------------------------------------------------
 g = makedata()
 g = glayout(g)
@@ -104,7 +130,13 @@ head(d)
 ggplot(d,aes(x=tI,fill=vaccinated))+geom_histogram()
 
 
-## ----timeplot------------------------------------------------------------
+## ----runFspread----------------------------------------------------------
+gF = infectN(2)(glayout(makedata(g=graph.tree(150,children=4))))
+gF = stepSim(gF, spreadVaccine, stopWhenClear)
+gplotgraph(gF)
+
+
+## ----timeplot,fig.width=8, fig.height=4, out.width="1.0\\textwidth"------
 timePlot(g, s=1)
 
 

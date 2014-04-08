@@ -1,7 +1,7 @@
 Package: sirgraph
 Title: SIR models on graphs
 Description: Infections disease modelling on graph networks
-Version: 0.1
+Version: 0.2
 Author: Barry Rowlingson <b.rowlingson@gmail.com>
 Maintainer: Barry Rowlingson <b.rowlingson@gmail.com>
 Depends:
@@ -9,6 +9,7 @@ Depends:
     igraph,
     ggplot2,
     plyr,
+    lubridate,
     reshape2
 Suggests:
     knitr
@@ -20,4 +21,5 @@ Collate:
     'sirgraph-package.r'
     'sirgraph.R'
     'states.R'
+    'vacctest.R'
 VignetteBuilder: knitr

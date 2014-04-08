@@ -168,6 +168,50 @@ g$time
 
 Notice how the current time has changed.
 
+The {\tt spreadP2} function is a special case of a more general spreader process where the
+probabilities are a function of time and the attributes of the potentially infected person. This
+is handled by the {\tt spreadF} function. By writing any function of time and vertex attributes, 
+it is possible to simulate other processes in this class. These functions must be vectorised over
+the vertices so that when called with a number of vertices they return the same number of
+probabilities.
+
+For example, this function returns 0.9 on any day apart from Sunday, when it returns 0.5 -- it 
+is independent of the vertex attributes.
+
+<<pSunday>>=
+restDay <- function(t, v){
+    nv = length(v)
+    if(wday(t)==1){
+        return(rep(0.5,nv))
+    }else{
+        return(rep(0.9,nv))
+    }
+}
+restDay("2014-04-06",0)
+restDay("2014-04-07",0)
+@ 
+
+Further, this function returns 0.9 if the vertex is an unvaccinated vertex, and 0.2 if it is vaccinated. This
+function ignores the time, and note it is vectorised over the vertices by using the {\tt ifelse} function:
+
+<<pVacc>>=
+isVaccinated <- function(t,v){
+    ifelse(v$vaccinated,0.2,0.9)
+}
+# see the first few
+isVaccinated("2014-01-01",V(g))[1:8]
+@
+
+Now we can use either of these to build a spreader function using {\tt spreadF}, along with a constant function
+for the recovery probability. We'll use a tree network to see how vaccinated nodes isolate branches of the
+tree. 
+
+<<fspread>>=
+fConst = function(t,v){rep(0.3, length(v))}
+spreadVaccine = spreadF(isVaccinated, fConst)
+@ 
+
+
 \subsection{Stopper Functions}
 
 A ``stopper'' function takes an SIR graph and returns TRUE if it decides you should stop running a simulation.
@@ -182,7 +226,7 @@ Stopper functions aren't much use on their own, but are designed to be passed in
 The main simulation looping function, {\tt stepSim} takes a graph, a
 a spreader function, and a stopper function, and
 runs the spreader until the stopper indicates it has finished. The graph
-is returned with final state and infections and removal times as node
+is returned in its final state with infection and removal times as node
 attributes.
 
 The default start time in {\tt makedata} is 2014-01-01, so here we'll run
@@ -222,11 +266,23 @@ head(d)
 ggplot(d,aes(x=tI,fill=vaccinated))+geom_histogram()
 @ 
 
+
+We now try running the simulation using the vaccine-dependent infection model
+defined as {\tt spreadVaccine} previously. We'll use a tree structure for
+our network to show the effect of vaccinated nodes protecting branches.
+
+<<runFspread>>=
+gF = infectN(2)(glayout(makedata(g=graph.tree(150,children=4))))
+gF = stepSim(gF, spreadVaccine, stopWhenClear)
+gplotgraph(gF)
+@ 
+
+
 \section{Plotting in Time}
 
 The resulting epidemic progress can be plotted:
 
-<<timeplot>>=
+<<timeplot,fig.width=8, fig.height=4, out.width="1.0\\textwidth">>=
 timePlot(g, s=1)
 @ 
 
@@ -250,6 +306,7 @@ saveHTML(
 Note how the graph must be printed at the start and via the {\tt after} function in the stepping loop. 
 This makes sure we see the initial state of the network and the final state.
 
+
 \section{Design}
 
 This code has been written with a fairly strong functional program methodology, hence the 
@@ -266,9 +323,8 @@ outside any looping code.
 Some ideas:
 
 \begin{itemize}
-  \item make the SIR graph objects a new class
+  \item make lots of things into classes so the print nicely
   \item separate the infectious and removal aspects of the spreader function
-  \item write some functions to plot the number of S, I, R cases over time
 \end{itemize}
 
 \end{document}
