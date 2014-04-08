@@ -40,12 +40,14 @@ infectN <- function(N){
 ##' @title spreadP2
 ##' @param pSI infection probability
 ##' @param pIR recovery probability
+##' @param stepsize size of time step
 ##' @return a spreader function that uses the probabilities on each edge to proceed with the
 ##' infection process.
 ##' @author Barry S Rowlingson
 ##' @export
-spreadP2 <- function(pSI=0.8, pIR=0.2){
+spreadP2 <- function(pSI=0.8, pIR=0.2, stepsize=1){
     f <- function(g){
+        g$stepsize = stepsize
         g$time = g$time + g$stepsize
         ## recover infected:
         I = which(V(g)$state=="I")

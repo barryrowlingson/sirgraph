@@ -9,7 +9,6 @@
 ##' @param s a random seed
 ##' @param pvac vaccination probability
 ##' @param start time start
-##' @param stepsize size of time step
 ##' @return a modified version of g with extra vertex attributes
 ##' @author Barry S Rowlingson
 ##' @export
@@ -17,8 +16,8 @@
 makedata <- function(g = graph.famous("Zachary"),
                      s=310366,
                      pvac=0.6,
-                     start = as.Date("2014-01-01"),
-                     stepsize = 1){
+                     start = as.Date("2014-01-01")
+                     ){
     set.seed(s)
     number_of_vertices = vcount(g)
     V(g)$vaccinated = runif(number_of_vertices) < pvac
@@ -27,7 +26,6 @@ makedata <- function(g = graph.famous("Zachary"),
     V(g)$state = "S"
     g$start = start
     g$time = start
-    g$stepsize = stepsize
     g
     
 }

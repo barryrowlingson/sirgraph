@@ -3,8 +3,7 @@
 \title{makedata}
 \usage{
   makedata(g = graph.famous("Zachary"), s = 310366,
-    pvac = 0.6, start = as.Date("2014-01-01"),
-    stepsize = 1)
+    pvac = 0.6, start = as.Date("2014-01-01"))
 }
 \arguments{
   \item{g}{a simple graph}
@@ -14,8 +13,6 @@
   \item{pvac}{vaccination probability}
 
   \item{start}{time start}
-
-  \item{stepsize}{size of time step}
 }
 \value{
   a modified version of g with extra vertex attributes
