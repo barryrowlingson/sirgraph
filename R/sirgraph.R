@@ -46,13 +46,31 @@ infectN <- function(N){
 ##' @author Barry S Rowlingson
 ##' @export
 spreadP2 <- function(pSI=0.8, pIR=0.2, stepsize=1){
+    force(pSI);force(pIR)
+    fSI = function(t,v){rep(pSI, length(v))}
+    fIR = function(t,v){rep(pIR, length(v))}
+    return(spreadF(fSI, fIR, stepsize))
+}
+
+##' functional probability epi modelling
+##'
+##' spread an SIR model using a function of time and attributes
+##' @title spreadF
+##' @param fpSI a function of t and vertices that returns the infection probability
+##' @param fpIR a function of t and vertices that returns the recovery probability
+##' @param stepsize time step
+##' @return a spreader function
+##' @author Barry S Rowlingson
+##' @export
+spreadF <- function(fpSI, fpIR, stepsize=1){
+    force(fpSI);force(fpIR)
     f <- function(g){
         g$stepsize = stepsize
         g$time = g$time + g$stepsize
         ## recover infected:
         I = which(V(g)$state=="I")
         if(length(I)>0){
-            recovered = I[runif(length(I))<pIR]
+            recovered = I[runif(length(I))<fpIR(g$time, V(g)[I])]
             if(length(recovered)>0){
                 V(g)$state[recovered]="R"
                 V(g)$tR[recovered]=g$time
@@ -64,7 +82,7 @@ spreadP2 <- function(pSI=0.8, pIR=0.2, stepsize=1){
             for(i in V(g)[nei(s)])
                 ## maybe infect susceptible neighbours
                 if(V(g)$state[i] == "S"){
-                    if(runif(1) < pSI){
+                    if(runif(1) < fpSI(g$time, V(g)[i])){
                         V(g)$state[i] = "I"
                         V(g)$tI[i] = g$time
                     }
@@ -74,7 +92,8 @@ spreadP2 <- function(pSI=0.8, pIR=0.2, stepsize=1){
     }
     f
 }
-            
+
+    
 
 
 ##' Discrete time-stepping SIR graph model
@@ -133,6 +152,7 @@ gAtTime <- function(g,t){
 ##' @author Barry S Rowlingson
 ##' @export
 stopAfter <- function(d){
+    force(d)
     f = function(g){
         if(g$time >= d){
             return(TRUE)
