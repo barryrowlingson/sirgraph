@@ -73,8 +73,8 @@ geom_edge <- function(mapping=NULL, data=NULL, graph=NULL, directed=FALSE,...){
 ##' @export
 gplotgraph <- function(g){
     ggplot() + geom_edge(aes(x=x,y=y),col="grey", data=g) +
-        geom_node(aes(x=x,y=y,col=state,shape=vaccinated),size=5,data=g) +
-            scale_colour_manual(values=c("I"="#E41A1C", "R"="#377EB8", "S"="#4DAF4A")) +
+        geom_node(aes(x=x,y=y,col=factor(state,levels=c("S","I","R")),shape=vaccinated),size=5,data=g) +
+            scale_colour_manual(values=c("I"="#E41A1C", "R"="#377EB8", "S"="#4DAF4A"), drop=FALSE, name="State") +
     ggtitle(g$time)
     
 }
@@ -97,7 +97,17 @@ plotSIR <- function(g, layout=layout.kamada.kawai, seed=1, ...){
     set.seed(ss)
 }
 
-
+##' plot SIR by time
+##'
+##' produces a line plot of S I R numbers
+##' @title timePlot
+##' @param g an SIR graph
+##' @param t time points for plotting or...
+##' @param n number of time points between start and finish or...
+##' @param s step size between start and finish
+##' @return a ggplot graph object
+##' @export
+##' @author Barry S Rowlingson
 timePlot <- function(g,t,n,s){
     if(missing(t)){
         if(missing(s)){
@@ -106,8 +116,9 @@ timePlot <- function(g,t,n,s){
             t = seq(g$start, g$time, by=s)
         }
     }
-    m = melt(stateAt(g, t), id.vars="t",value.name="count", variable.name="state")
+    m = stateAt(g, t, melt=TRUE)
     ggplot(m,aes(x=t, y=count)) +
-        geom_line(aes(group=state, colour=state)) + 
-        scale_colour_manual(values=unlist(SIRcolours) )
+        geom_line(aes(group=state, colour=state, size=state)) + 
+        scale_colour_manual(values=unlist(SIRcolours) ) +
+        scale_size_manual(values=c("S"=3, "I"=2, "R"=1))
 }

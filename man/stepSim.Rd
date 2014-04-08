@@ -2,13 +2,10 @@
 \alias{stepSim}
 \title{stepSim}
 \usage{
-  stepSim(g, starter = infectN(1), spreader, stopper,
-    after = force)
+  stepSim(g, spreader, stopper, after = force)
 }
 \arguments{
   \item{g}{an SIR graph}
-
-  \item{starter}{a starter function}
 
   \item{spreader}{a spreader function}
 

@@ -46,6 +46,7 @@ infectN <- function(N){
 ##' @export
 spreadP2 <- function(pSI=0.8, pIR=0.2){
     f <- function(g){
+        g$time = g$time + g$stepsize
         ## recover infected:
         I = which(V(g)$state=="I")
         if(length(I)>0){
@@ -81,18 +82,14 @@ spreadP2 <- function(pSI=0.8, pIR=0.2){
 ##' every iteration
 ##' @title stepSim
 ##' @param g an SIR graph
-##' @param starter a starter function
 ##' @param spreader a spreader function
 ##' @param stopper a stopper function
 ##' @param after function to call after each spread function call
 ##' @return the end state of the graph
 ##' @author Barry S Rowlingson
 ##' @export
-stepSim <- function(g, starter=infectN(1), spreader, stopper, after=force){
-    g = glayout(g)
-    g = starter(g)
+stepSim <- function(g, spreader, stopper, after=force){
     repeat{
-        g$time = g$time + g$stepsize
         g = spreader(g)
         after(g)
         if(stopper(g)){

@@ -1,4 +1,8 @@
 
+## ----startup-------------------------------------------------------------
+library(sirgraph)
+
+
 ## ----data----------------------------------------------------------------
 g = makedata()
 g
@@ -71,18 +75,23 @@ g = sMore(g)
 plotSIR(g)
 g = sMore(g)
 plotSIR(g)
+g$time
 
 
 ## ----runsim--------------------------------------------------------------
 g = makedata()
-g = stepSim(g, infectN(1), sMore, stopAfter("2014-01-12"))
+g = glayout(g)
+g = infectN(1)(g)
+g = stepSim(g, sMore, stopAfter("2014-01-12"))
 g$time
 gplotgraph(g)
 
 
 ## ----stepclear-----------------------------------------------------------
 g = makedata()
-g = stepSim(g, infectN(1), sMore, stopWhenClear)
+g = glayout(g)
+g = infectN(1)(g)
+g = stepSim(g, sMore, stopWhenClear)
 g$time
 gplotgraph(g)
 
@@ -93,5 +102,9 @@ d$tI = as.Date(d$tI, "1970-01-01")
 d$tR = as.Date(d$tR, "1970-01-01")
 head(d)
 ggplot(d,aes(x=tI,fill=vaccinated))+geom_histogram()
+
+
+## ----timeplot------------------------------------------------------------
+timePlot(g, s=1)
 
 

@@ -163,10 +163,10 @@ g = sMore(g)
 plotSIR(g)
 g = sMore(g)
 plotSIR(g)
+g$time
 @ 
 
-One thing we haven't done here is to update the time attribute of the graph. This can be done
-within a loop that repeatedly calls the spreader function, but first we need to look at stopper functions.
+Notice how the current time has changed.
 
 \subsection{Stopper Functions}
 
@@ -180,7 +180,7 @@ Stopper functions aren't much use on their own, but are designed to be passed in
 \section{Running Simulations}
 
 The main simulation looping function, {\tt stepSim} takes a graph, a
-starter function, a spreader function, and a stopper function, and
+a spreader function, and a stopper function, and
 runs the spreader until the stopper indicates it has finished. The graph
 is returned with final state and infections and removal times as node
 attributes.
@@ -190,7 +190,9 @@ for 12 days:
 
 <<runsim>>=
 g = makedata()
-g = stepSim(g, infectN(1), sMore, stopAfter("2014-01-12"))
+g = glayout(g)
+g = infectN(1)(g)
+g = stepSim(g, sMore, stopAfter("2014-01-12"))
 g$time
 gplotgraph(g)
 @ 
@@ -200,7 +202,9 @@ it has finished and there are no infectious nodes.
 
 <<stepclear>>=
 g = makedata()
-g = stepSim(g, infectN(1), sMore, stopWhenClear)
+g = glayout(g)
+g = infectN(1)(g)
+g = stepSim(g, sMore, stopWhenClear)
 g$time
 gplotgraph(g)
 @
@@ -217,6 +221,34 @@ d$tR = as.Date(d$tR, "1970-01-01")
 head(d)
 ggplot(d,aes(x=tI,fill=vaccinated))+geom_histogram()
 @ 
+
+\section{Plotting in Time}
+
+The resulting epidemic progress can be plotted:
+
+<<timeplot>>=
+timePlot(g, s=1)
+@ 
+
+Or you can use the {\tt animation} package to produce a web page:
+
+\begin{verbatim}
+saveHTML(
+    {
+      print(gplotgraph(g));
+      g = stepSim(g, 
+                  sMore,
+                  stopWhenClear,
+                  after=function(g){
+                      print(gplotgraph(g))
+                     })
+    },
+    outdir="./spread/"
+    )
+\end{verbatim}
+
+Note how the graph must be printed at the start and via the {\tt after} function in the stepping loop. 
+This makes sure we see the initial state of the network and the final state.
 
 \section{Design}
 
