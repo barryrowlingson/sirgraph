@@ -51,6 +51,7 @@ plotSIR(g)
 
 ## ----spread1-------------------------------------------------------------
 sEvens = spreadP2(pSI=0.5, pIR=0.5)
+sEvens
 
 
 ## ----spreadit, fig.width=8, fig.height=8, out.width="0.8\\textwidth"-----
@@ -66,6 +67,7 @@ plotSIR(g)
 
 ## ----spreadmore,fig.width=8, fig.height=8, out.width="0.8\\textwidth"----
 sMore = spreadP2(pSI=0.8, pIR=0.1)
+sMore
 g = infectN(5)(g)
 par(mfrow=c(2,2)); par(mar=c(0,0,0,0))
 plotSIR(g)
@@ -102,6 +104,7 @@ isVaccinated("2014-01-01",V(g))[1:8]
 ## ----fspread-------------------------------------------------------------
 fConst = function(t,v){rep(0.3, length(v))}
 spreadVaccine = spreadF(isVaccinated, fConst)
+spreadVaccine
 
 
 ## ----runsim--------------------------------------------------------------

@@ -135,6 +135,7 @@ infectious possibility and recovery possibility an even chance is created thus:
 
 <<spread1>>=
 sEvens = spreadP2(pSI=0.5, pIR=0.5)
+sEvens
 @ 
 
 We can now run this spreader a few times and see the change.
@@ -154,6 +155,7 @@ Now we repeat, but with a lower recovery probability and a higher infectious pro
 
 <<spreadmore,fig.width=8, fig.height=8, out.width="0.8\\textwidth" >>=
 sMore = spreadP2(pSI=0.8, pIR=0.1)
+sMore
 g = infectN(5)(g)
 par(mfrow=c(2,2)); par(mar=c(0,0,0,0))
 plotSIR(g)
@@ -209,6 +211,7 @@ tree.
 <<fspread>>=
 fConst = function(t,v){rep(0.3, length(v))}
 spreadVaccine = spreadF(isVaccinated, fConst)
+spreadVaccine
 @ 
 
 

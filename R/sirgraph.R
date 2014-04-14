@@ -49,7 +49,8 @@ spreadP2 <- function(pSI=0.8, pIR=0.2, stepsize=1){
     force(pSI);force(pIR)
     fSI = function(t,v){rep(pSI, length(v))}
     fIR = function(t,v){rep(pIR, length(v))}
-    return(spreadF(fSI, fIR, stepsize))
+    title = paste0("Fixed spread probabilities, pSI=",pSI, " pIR=",pIR)
+    return(spreader(spreadF(fSI, fIR, stepsize),title=title))
 }
 
 ##' functional probability epi modelling
@@ -90,11 +91,21 @@ spreadF <- function(fpSI, fpIR, stepsize=1){
         }
         g
     }
+    spreader(f,"Spread probabilities as functions")
+}
+
+
+spreader <- function(f, title){
+    class(f)=c("spreader","function")
+    attr(f,"title")=title
     f
 }
 
-    
-
+print.spreader <- function(x,...){
+    cat("SIR spread function\n")
+    cat(attr(x,"title"))
+    cat("\n")
+}
 
 ##' Discrete time-stepping SIR graph model
 ##'
