@@ -57,7 +57,7 @@ geom_edge <- function(mapping=NULL, data=NULL, graph=NULL, directed=FALSE,...){
         get.vertex.attribute(data, mapping$x),
         get.vertex.attribute(data, mapping$y)
         )
-    edgelist <- get.edgelist(data)
+    edgelist <- get.edgelist(data, names=FALSE) # get row numbers not names!
     df <- data.frame(xy[edgelist[, 1],], xy[edgelist[,2],])
     names(df)=c("x","y","xend","yend")
     geom_segment(aes(x=x,y=y,xend=xend,yend=yend), data=df, ...)
