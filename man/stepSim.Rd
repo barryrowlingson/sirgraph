@@ -2,7 +2,7 @@
 \alias{stepSim}
 \title{stepSim}
 \usage{
-  stepSim(g, spreader, stopper, after = force)
+stepSim(g, spreader, stopper, after = force)
 }
 \arguments{
   \item{g}{an SIR graph}
@@ -15,17 +15,17 @@
   call}
 }
 \value{
-  the end state of the graph
+the end state of the graph
 }
 \description{
-  Discrete time-stepping SIR graph model
+Discrete time-stepping SIR graph model
 }
 \details{
-  Starting with a graph, infect the initial cases, then run
-  the spreader until the stopper is true. Optionally run
-  the plotter every iteration
+Starting with a graph, infect the initial cases, then run
+the spreader until the stopper is true. Optionally run the
+plotter every iteration
 }
 \author{
-  Barry S Rowlingson
+Barry S Rowlingson
 }
 

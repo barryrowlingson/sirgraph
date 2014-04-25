@@ -2,7 +2,7 @@
 \alias{spreadF}
 \title{spreadF}
 \usage{
-  spreadF(fpSI, fpIR, stepsize = 1)
+spreadF(fpSI, fpIR, stepsize = 1)
 }
 \arguments{
   \item{fpSI}{a function of t and vertices that returns the
@@ -14,16 +14,15 @@
   \item{stepsize}{time step}
 }
 \value{
-  a spreader function
+a spreader function
 }
 \description{
-  functional probability epi modelling
+functional probability epi modelling
 }
 \details{
-  spread an SIR model using a function of time and
-  attributes
+spread an SIR model using a function of time and attributes
 }
 \author{
-  Barry S Rowlingson
+Barry S Rowlingson
 }
 

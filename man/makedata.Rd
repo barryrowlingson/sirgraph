@@ -2,8 +2,8 @@
 \alias{makedata}
 \title{makedata}
 \usage{
-  makedata(g = graph.famous("Zachary"), s = 310366,
-    pvac = 0.6, start = as.Date("2014-01-01"))
+makedata(g = graph.famous("Zachary"), s = 310366, pvac = 0.6,
+  start = as.Date("2014-01-01"))
 }
 \arguments{
   \item{g}{a simple graph}
@@ -15,18 +15,17 @@
   \item{start}{time start}
 }
 \value{
-  a modified version of g with extra vertex attributes
+a modified version of g with extra vertex attributes
 }
 \description{
-  make a simple graph for SIR modelling
+make a simple graph for SIR modelling
 }
 \details{
-  make a graph for SIR modelling - it initialises the
-  network and the state parameter, and adds a few more
-  random things such as age, sex, vaccination state. Handy
-  for simple tests
+make a graph for SIR modelling - it initialises the network
+and the state parameter, and adds a few more random things
+such as age, sex, vaccination state. Handy for simple tests
 }
 \author{
-  Barry S Rowlingson
+Barry S Rowlingson
 }
 

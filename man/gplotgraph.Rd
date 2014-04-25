@@ -2,21 +2,21 @@
 \alias{gplotgraph}
 \title{gplotgraph}
 \usage{
-  gplotgraph(g)
+gplotgraph(g)
 }
 \arguments{
   \item{g}{an SIR graph}
 }
 \value{
-  make a plot
+make a plot
 }
 \description{
-  plot an SIR graph
+plot an SIR graph
 }
 \details{
-  use ggplot to show an SIR graph
+use ggplot to show an SIR graph
 }
 \author{
-  Barry S Rowlingson
+Barry S Rowlingson
 }
 

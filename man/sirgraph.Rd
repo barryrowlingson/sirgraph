@@ -4,6 +4,6 @@
 \alias{sirgraph-package}
 \title{sirgraph}
 \description{
-  sirgraph
+sirgraph
 }
 

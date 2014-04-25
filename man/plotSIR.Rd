@@ -2,7 +2,7 @@
 \alias{plotSIR}
 \title{plotSIR}
 \usage{
-  plotSIR(g, layout = layout.kamada.kawai, seed = 1, ...)
+plotSIR(g, layout = layout.kamada.kawai, seed = 1, ...)
 }
 \arguments{
   \item{g}{an SIR graph}
@@ -14,15 +14,15 @@
   \item{...}{further layout parameters}
 }
 \value{
-  nothing
+nothing
 }
 \description{
-  SIR graph base graphics plot
+SIR graph base graphics plot
 }
 \details{
-  use base graphics to plot an SIR network
+use base graphics to plot an SIR network
 }
 \author{
-  Barry S Rowlingson
+Barry S Rowlingson
 }
 
