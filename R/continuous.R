@@ -20,7 +20,9 @@
 ##' @param rIR rate of recovery per unit time
 ##' @return updated SIR graph 
 ##' @author Barry Rowlingson
-cspreadF <- function(rSI, rIR){
+##' @export
+
+cspreadR <- function(rSI, rIR){
     force(rSI)
     force(rIR)
     f = function(g){
@@ -71,7 +73,7 @@ cspreadF <- function(rSI, rIR){
             t = tInfect[wInfected]
             V(g)$state[iInfected]="I"
             V(g)$tI[iInfected] = g$time + t
-            cat("infection of ",iInfected," after ",t,"\n")
+            ## cat("infection of ",iInfected," after ",t,"\n")
         }else{
             ## we have a recovery
             wRecover = which.min(tRecover)
@@ -79,7 +81,7 @@ cspreadF <- function(rSI, rIR){
             t = tRecover[wRecover]
             V(g)$state[iRecover]="R"
             V(g)$tR[iRecover]=g$time+t
-            cat("recovery of ",iRecover," after ",t,"\n")
+            ## cat("recovery of ",iRecover," after ",t,"\n")
         }
         g$time = g$time + t
         g

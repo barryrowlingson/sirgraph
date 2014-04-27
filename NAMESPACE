@@ -1,3 +1,4 @@
+export(cspreadR)
 export(gAtTime)
 export(geom_edge)
 export(geom_node)

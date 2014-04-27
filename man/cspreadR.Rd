@@ -1,0 +1,35 @@
+\name{cspreadR}
+\alias{cspreadR}
+\title{independent rate spread}
+\usage{
+cspreadR(rSI, rIR)
+}
+\arguments{
+  \item{rSI}{rate of infections per contact-time}
+
+  \item{rIR}{rate of recovery per unit time}
+}
+\value{
+updated SIR graph
+}
+\description{
+continuous time spreading function
+}
+\details{
+infection and recovery rates are times sampled from an
+exponential distribution.
+
+The function works by simulating all recovery and infection
+times from the current state, taking the minimum of those
+and changing the state of the graph for that case only. The
+other simulation times are then thrown away. The modified
+graph is returned.
+
+Since the recovery times are independent of time and graph
+state, then these could all be computed at infection time
+for an efficiency gain. Currently they aren't.
+}
+\author{
+Barry Rowlingson
+}
+

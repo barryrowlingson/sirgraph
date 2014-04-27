@@ -139,6 +139,17 @@ gF = stepSim(gF, spreadVaccine, stopWhenClear)
 gplotgraph(gF)
 
 
+## ----continuous----------------------------------------------------------
+g = infectN(10)(glayout(makedata()))
+cf = cspreadR(0.1, 0.1)
+gContinuous = stepSim(g, cf, stopWhenClear)
+timePlot(gContinuous, n=40)
+g = infectN(10)(glayout(makedata()))
+cf = spreadP2(0.1, 0.1)
+gDiscrete = stepSim(g, cf, stopWhenClear)
+timePlot(gDiscrete, n=40)
+
+
 ## ----timeplot,fig.width=8, fig.height=4, out.width="1.0\\textwidth"------
 timePlot(g, s=1)
 
