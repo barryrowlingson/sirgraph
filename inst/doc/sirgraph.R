@@ -140,14 +140,16 @@ gplotgraph(gF)
 
 
 ## ----continuous----------------------------------------------------------
-g = infectN(10)(glayout(makedata()))
-cf = cspreadR(0.1, 0.1)
-gContinuous = stepSim(g, cf, stopWhenClear)
-timePlot(gContinuous, n=40)
-g = infectN(10)(glayout(makedata()))
-cf = spreadP2(0.1, 0.1)
-gDiscrete = stepSim(g, cf, stopWhenClear)
-timePlot(gDiscrete, n=40)
+g0 = infectN(10)(glayout(makedata()))
+
+contSpread = cspreadR(0.1, 0.1)
+discSpread = spreadP2(0.1, 0.1)
+gContinuous = stepSim(g0, contSpread, stopWhenClear)
+gDiscrete = stepSim(g0, discSpread, stopWhenClear)
+
+table(V(gContinuous)$state)
+table(V(gDiscrete)$state)
+
 
 
 ## ----timeplot,fig.width=8, fig.height=4, out.width="1.0\\textwidth"------
