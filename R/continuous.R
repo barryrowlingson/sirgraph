@@ -27,13 +27,14 @@ cspreadR <- function(rSI, rIR){
     force(rIR)
     f = function(g){
 
-        ## 
+        ##
+        time = g$time
 
         ## when will infected cases recover?
         I =  which(V(g)$state=="I")
         if(length(I)>0){
             gotRecovers = TRUE
-            tRecover = rexp(length(I), rIR)
+            tRecover = V(g)$tR[I]
         }else{
             gotRecovers = FALSE
             tRecover = Inf
@@ -54,7 +55,7 @@ cspreadR <- function(rSI, rIR){
 
         if(nrow(infs)>0){
             gotInfects = TRUE
-            tInfect = rexp(nrow(infs),infs[,3])
+            tInfect = time + rexp(nrow(infs),infs[,3])
         }else{
             gotInfects = FALSE
             tInfect = Inf
@@ -65,6 +66,7 @@ cspreadR <- function(rSI, rIR){
             g$time = g$time + (g$time - g$start)
             return(g)
         }
+
         
         if(min(tInfect)<min(tRecover)){
             ## we have an infection
@@ -72,21 +74,28 @@ cspreadR <- function(rSI, rIR){
             iInfected = infs[wInfected,2]
             t = tInfect[wInfected]
             V(g)$state[iInfected]="I"
-            V(g)$tI[iInfected] = g$time + t
-            ## cat("infection of ",iInfected," after ",t,"\n")
+            V(g)$tI[iInfected] = t
+### recoveries are independent of everything
+            V(g)$tR[iInfected] = t + rexp(1, rate=rIR)
         }else{
             ## we have a recovery
             wRecover = which.min(tRecover)
             iRecover = I[wRecover]
             t = tRecover[wRecover]
             V(g)$state[iRecover]="R"
-            V(g)$tR[iRecover]=g$time+t
-            ## cat("recovery of ",iRecover," after ",t,"\n")
         }
-        g$time = g$time + t
+        g$time = t
         g
     }
 
 
     spreader(f,"continuous time, fixed rates")
+}
+
+
+addRecovery <- function(g, rate){
+    I=which(V(g)$state=="I")
+    n = length(I)
+    V(g)$tR[I] = rexp(n, rate) + g$time
+    g
 }

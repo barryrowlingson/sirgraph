@@ -123,6 +123,7 @@ print.spreader <- function(x,...){
 stepSim <- function(g, spreader, stopper, after=force){
     repeat{
         g = spreader(g)
+        class(g$time)=class(g$start) ## fix Date classes
         after(g)
         if(stopper(g)){
             break
