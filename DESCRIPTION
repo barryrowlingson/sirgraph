@@ -4,15 +4,16 @@ Description: Infections disease modelling on graph networks
 Version: 0.2
 Author: Barry Rowlingson <b.rowlingson@gmail.com>
 Maintainer: Barry Rowlingson <b.rowlingson@gmail.com>
-Depends:
-    R (>= 3.0.2),
-    igraph,
-    ggplot2,
-    plyr,
-    lubridate,
-    reshape2
-Suggests:
-    knitr
+Depends: 
+ R (>= 3.0.2),
+ igraph,
+ ggplot2,
+ plyr,
+ lubridate,
+ reshape2
+Suggests: 
+ knitr,
+  testthat
 License: MIT
 LazyData: true
 VignetteBuilder: knitr
