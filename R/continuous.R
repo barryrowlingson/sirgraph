@@ -27,12 +27,17 @@ cspreadR <- function(rSI, rIR){
     force(rIR)
     f = function(g){
 
+        
         ##
         time = g$time
 
         ## when will infected cases recover?
         I =  which(V(g)$state=="I")
         if(length(I)>0){
+            if(any(is.na(V(g)$tR[I]))){
+                whichFail = I[is.na(V(g)$tR[I])]
+                stop("Recovery time for ",paste(whichFail,collapse=","), " not set")
+            }
             gotRecovers = TRUE
             tRecover = V(g)$tR[I]
         }else{
@@ -89,7 +94,7 @@ cspreadR <- function(rSI, rIR){
     }
 
 
-    spreader(f,"continuous time, fixed rates")
+    spreader(f,paste("continuous time, infection rate: ", rSI," recovery rate: ",rIR,sep=""))
 }
 
 
