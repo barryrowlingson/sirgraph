@@ -1,16 +1,31 @@
 test_that("continuous sim",{
+
+    s = cspreadR(.1,.1)
+
     g = makedata()
+    s(g)
+    
+    ## no infected, so all still S
+    expect_true(all(V(g)$state=="S"))
+
+    ## infect two
     g = infectN(2)(g)
-    s = cspreadR(1,.1)
 
-    ## recovery time not set
-    expect_error(stepSim(g, s, stopWhenClear))
+    ## recovery time not set, so error
+    expect_error(s(g))
 
-    g = addRecovery(g,1)
+    ## set recovery using exp rate
+    g = addRecovery(g,.1)
 
     ## now stepping works
-    g = stepSim(g, s, stopWhenClear)
-    expect_true(!any(V(g)=="I"))
+    g = s(g)
+
+    ## should now not have two cases (we could have had a recovery
+    ## or a new infection, either way, no longer two infections)
+    expect_true(sum(V(g)$state=="I")!=2)
+
+    ## at some time after start
+    expect_true(g$time > g$start)
 }
           )
 
