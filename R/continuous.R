@@ -97,7 +97,16 @@ cspreadR <- function(rSI, rIR){
     spreader(f,paste("continuous time, infection rate: ", rSI," recovery rate: ",rIR,sep=""))
 }
 
-
+##' add recovery times
+##'
+##' this function takes a graph and computes recovery times for
+##' all infected cases based on an exponential distribution
+##' @title Add recovery times
+##' @param g an SIR graph
+##' @param rate exponential distribution rate per unit time
+##' @return an SIR graph with recovery times set for infected cases
+##' @export
+##' @author Barry Rowlingson
 addRecovery <- function(g, rate){
     I=which(V(g)$state=="I")
     n = length(I)

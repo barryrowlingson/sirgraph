@@ -140,15 +140,28 @@ gplotgraph(gF)
 
 
 ## ----continuous----------------------------------------------------------
-g0 = infectN(10)(glayout(makedata()))
+## create a graph with two infections
+gDiscrete = infectN(2)(glayout(makedata()))
 
-contSpread = cspreadR(0.1, 0.1)
+## now add recovery times to the infected cases
+gContinuous = addRecovery(gDiscrete,0.1)
+
+## a discrete probability and a continuous rate spread function
 discSpread = spreadP2(0.1, 0.1)
-gContinuous = stepSim(g0, contSpread, stopWhenClear)
-gDiscrete = stepSim(g0, discSpread, stopWhenClear)
+contSpread = cspreadR(0.1, 0.1)
 
-table(V(gContinuous)$state)
+## run them both
+gDiscrete = stepSim(gDiscrete, discSpread, stopWhenClear)
+gContinuous = stepSim(gContinuous, contSpread, stopWhenClear)
+
+## compare the epidemic outcome
 table(V(gDiscrete)$state)
+table(V(gContinuous)$state)
+
+## show discrete/continuous recovery times
+options(digits=8)
+V(gDiscrete)$tR[1:5]
+V(gContinuous)$tR[1:5]
 
 
 
