@@ -93,7 +93,7 @@ plotSIR <- function(g, layout=layout.kamada.kawai, seed=1, ...){
     ss = .Random.seed
     set.seed(seed)
     cols = list(S="#80FF80",I="#FF8080",R="#8080FF")
-    plot(g, vertex.color = unlist(cols[V(g)$state]), ...)
+    plot(g, vertex.color = unlist(cols[V(g)$state]), layout=layout, ...)
     set.seed(ss)
 }
 
